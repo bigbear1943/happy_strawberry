@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --color-zen-50: #f8f7f4;
+  --color-zen-100: #f0ede6;
+  --color-zen-200: #e2ddd1;
+  --color-zen-300: #cfc7b5;
+  --color-zen-400: #b5a88e;
+  --color-zen-500: #9e8e71;
+  --color-zen-600: #8a7a62;
+  --color-zen-700: #726451;
+  --color-zen-800: #5e5345;
+  --color-zen-900: #4e453a;
+  --color-zen-950: #2a241f;
+
+  --color-sage-400: #9caf88;
+  --color-sage-500: #7d9a68;
+  --color-sage-600: #638050;
+
+  --color-sand-100: #faf8f5;
+  --color-sand-200: #f2ede5;
+  --color-sand-300: #e8e0d3;
+
+  --font-zen: 'Inter', system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: var(--font-zen);
+    background-color: var(--color-zen-50);
+    color: var(--color-zen-900);
+    min-height: 100dvh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-sage-400);
+    color: white;
+  }
+}
+
+@layer components {
+  .zen-glass {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.65) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.04),
+      0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+
+  .zen-glass-strong {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.85) 100%
+    );
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.06),
+      0 4px 16px rgba(0, 0, 0, 0.03);
+  }
+
+  .zen-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-sand-200) 25%,
+      var(--color-sand-100) 50%,
+      var(--color-sand-200) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s ease-in-out infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
