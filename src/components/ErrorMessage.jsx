@@ -18,10 +18,10 @@ export default function ErrorMessage({ message, onRetry }) {
 
             <div className="space-y-2">
                 <p className="text-zen-500 text-lg font-light">
-                    {message || 'The capsule is currently offline'}
+                    {message || '膠囊目前處於離線狀態'}
                 </p>
                 <p className="text-zen-400 text-sm">
-                    Your inspirations are safe in the cloud
+                    你的靈感安全地保存在雲端
                 </p>
             </div>
 
@@ -35,7 +35,7 @@ export default function ErrorMessage({ message, onRetry }) {
                      hover:bg-zen-200 transition-colors cursor-pointer"
                 >
                     <RefreshCw className="w-4 h-4" />
-                    Try again
+                    重新嘗試
                 </motion.button>
             )}
         </motion.div>

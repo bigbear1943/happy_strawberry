@@ -5,12 +5,12 @@ import { X, Sparkles, Send } from 'lucide-react'
 function previewCategory(text) {
     const trimmed = text.trim()
     if (!trimmed) return null
-    const wordCount = trimmed.split(/\s+/).length
-    if (wordCount <= 8) return 'Quote'
-    if (trimmed.startsWith('http') || trimmed.includes('://')) return 'Link'
-    if (wordCount <= 25) return 'Thought'
-    if (trimmed.includes('TODO') || trimmed.includes('todo')) return 'Task'
-    return 'Note'
+    const charCount = trimmed.length
+    if (trimmed.startsWith('http') || trimmed.includes('://')) return '連結'
+    if (trimmed.includes('TODO') || trimmed.includes('todo') || trimmed.includes('待辦')) return '待辦'
+    if (charCount <= 20) return '語錄'
+    if (charCount <= 60) return '想法'
+    return '筆記'
 }
 
 export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting }) {
@@ -62,7 +62,7 @@ export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting }) 
                                 <div className="flex items-center gap-2">
                                     <Sparkles className="w-4 h-4 text-sage-500" />
                                     <h3 className="text-sm font-medium text-zen-700 tracking-wide">
-                                        New Inspiration
+                                        新增靈感
                                     </h3>
                                 </div>
                                 <motion.button
@@ -81,7 +81,7 @@ export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting }) 
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="Capture a thought, a quote, or a spark of inspiration..."
+                                placeholder="記下一個想法、一句語錄、或一道靈感的火花..."
                                 rows={4}
                                 autoFocus
                                 className="w-full bg-zen-50/50 rounded-2xl p-4 text-zen-800 
@@ -103,7 +103,7 @@ export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting }) 
                                             className="flex items-center gap-1.5 text-xs text-zen-400"
                                         >
                                             <span className="w-1.5 h-1.5 rounded-full bg-sage-400" />
-                                            Auto-tagged as <span className="font-medium text-zen-600">{category}</span>
+                                            自動標記為 <span className="font-medium text-zen-600">{category}</span>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
@@ -130,7 +130,7 @@ export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting }) 
                                     ) : (
                                         <>
                                             <Send className="w-3.5 h-3.5" />
-                                            Save
+                                            儲存
                                         </>
                                     )}
                                 </motion.button>
@@ -138,7 +138,7 @@ export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting }) 
 
                             {/* Keyboard shortcut hint */}
                             <p className="text-center text-xs text-zen-300 mt-3">
-                                Press <kbd className="px-1.5 py-0.5 rounded bg-zen-100 text-zen-500 font-mono text-[10px]">Ctrl</kbd>+<kbd className="px-1.5 py-0.5 rounded bg-zen-100 text-zen-500 font-mono text-[10px]">Enter</kbd> to save
+                                按 <kbd className="px-1.5 py-0.5 rounded bg-zen-100 text-zen-500 font-mono text-[10px]">Ctrl</kbd>+<kbd className="px-1.5 py-0.5 rounded bg-zen-100 text-zen-500 font-mono text-[10px]">Enter</kbd> 快速儲存
                             </p>
                         </div>
                     </motion.div>

@@ -37,11 +37,11 @@ export default function LoadingSpinner() {
             </div>
 
             <motion.p
-                className="text-zen-400 text-sm tracking-widest uppercase"
+                className="text-zen-400 text-sm tracking-widest"
                 animate={{ opacity: [0.4, 0.8, 0.4] }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
-                breathing...
+                靜心載入中...
             </motion.p>
         </div>
     )

@@ -2,27 +2,27 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Quote, Lightbulb, Link2, ListTodo, StickyNote, Trash2 } from 'lucide-react'
 
 const categoryConfig = {
-    Quote: { icon: Quote, color: 'text-amber-600', bg: 'bg-amber-50' },
-    Thought: { icon: Lightbulb, color: 'text-purple-600', bg: 'bg-purple-50' },
-    Link: { icon: Link2, color: 'text-blue-600', bg: 'bg-blue-50' },
-    Task: { icon: ListTodo, color: 'text-rose-600', bg: 'bg-rose-50' },
-    Note: { icon: StickyNote, color: 'text-sage-600', bg: 'bg-sage-400/10' },
-    General: { icon: StickyNote, color: 'text-zen-600', bg: 'bg-zen-100' },
+    語錄: { icon: Quote, color: 'text-amber-600', bg: 'bg-amber-50' },
+    想法: { icon: Lightbulb, color: 'text-purple-600', bg: 'bg-purple-50' },
+    連結: { icon: Link2, color: 'text-blue-600', bg: 'bg-blue-50' },
+    待辦: { icon: ListTodo, color: 'text-rose-600', bg: 'bg-rose-50' },
+    筆記: { icon: StickyNote, color: 'text-sage-600', bg: 'bg-sage-400/10' },
+    一般: { icon: StickyNote, color: 'text-zen-600', bg: 'bg-zen-100' },
 }
 
 function formatDate(dateStr) {
     const date = new Date(dateStr)
-    return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
+    return date.toLocaleDateString('zh-TW', {
         year: 'numeric',
+        month: 'long',
+        day: 'numeric',
     })
 }
 
 export default function ZenCard({ inspiration, onDelete }) {
     if (!inspiration) return null
 
-    const config = categoryConfig[inspiration.category] || categoryConfig.General
+    const config = categoryConfig[inspiration.category] || categoryConfig['一般']
     const Icon = config.icon
 
     return (
@@ -55,7 +55,7 @@ export default function ZenCard({ inspiration, onDelete }) {
                                 onClick={() => onDelete(inspiration.id)}
                                 className="p-2 rounded-full text-zen-300 hover:text-rose-400 
                            hover:bg-rose-50 transition-colors cursor-pointer"
-                                title="Delete"
+                                title="刪除"
                             >
                                 <Trash2 className="w-4 h-4" />
                             </motion.button>

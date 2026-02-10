@@ -50,7 +50,7 @@ export default function SearchBar({ onSearch, onSelect, results, isSearching }) 
                         setIsOpen(true)
                     }}
                     onFocus={() => query.length >= 2 && setIsOpen(true)}
-                    placeholder="Search your capsule..."
+                    placeholder="搜尋你的靈感膠囊..."
                     className="flex-1 bg-transparent text-zen-800 placeholder-zen-400 
                      text-sm outline-none"
                 />
@@ -104,7 +104,7 @@ export default function SearchBar({ onSearch, onSelect, results, isSearching }) 
                             ))
                         ) : (
                             <div className="px-4 py-6 text-center">
-                                <p className="text-zen-400 text-sm">No inspirations found</p>
+                                <p className="text-zen-400 text-sm">找不到相關靈感</p>
                             </div>
                         )}
                     </motion.div>

@@ -5,13 +5,13 @@ import { supabase } from './supabaseClient'
  */
 function autoTag(content) {
     const trimmed = content.trim()
-    const wordCount = trimmed.split(/\s+/).length
+    const charCount = trimmed.length
 
-    if (wordCount <= 8) return 'Quote'
-    if (trimmed.startsWith('http') || trimmed.includes('://')) return 'Link'
-    if (wordCount <= 25) return 'Thought'
-    if (trimmed.includes('TODO') || trimmed.includes('todo')) return 'Task'
-    return 'Note'
+    if (trimmed.startsWith('http') || trimmed.includes('://')) return '連結'
+    if (trimmed.includes('TODO') || trimmed.includes('todo') || trimmed.includes('待辦')) return '待辦'
+    if (charCount <= 20) return '語錄'
+    if (charCount <= 60) return '想法'
+    return '筆記'
 }
 
 /**

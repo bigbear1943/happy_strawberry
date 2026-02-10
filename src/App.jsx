@@ -102,11 +102,11 @@ function InspirationApp() {
           <div className="flex items-center justify-center gap-2 mb-1">
             <Sparkles className="w-5 h-5 text-sage-500" />
             <h1 className="text-xl font-semibold text-zen-800 tracking-tight">
-              Inspiration Capsule
+              靈感膠囊
             </h1>
           </div>
-          <p className="text-xs text-zen-400 tracking-widest uppercase">
-            A moment of clarity
+          <p className="text-xs text-zen-400 tracking-widest">
+            每一刻都值得記錄
           </p>
         </motion.div>
       </header>
@@ -166,10 +166,10 @@ function InspirationApp() {
                 <Sparkles className="w-10 h-10 text-zen-300 mx-auto mb-4" />
               </motion.div>
               <p className="text-zen-400 text-lg font-light mb-2">
-                Your capsule is empty
+                你的膠囊是空的
               </p>
               <p className="text-zen-300 text-sm">
-                Tap the + button to add your first inspiration
+                點擊 + 按鈕，新增你的第一則靈感
               </p>
             </motion.div>
           )}
@@ -191,7 +191,7 @@ function InspirationApp() {
                        disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Shuffle className="w-4 h-4" />
-            Next
+            下一則
           </motion.button>
 
           {/* Add button (FAB) */}
