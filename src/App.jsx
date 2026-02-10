@@ -8,7 +8,7 @@ import SearchBar from './components/SearchBar'
 import MagicInput from './components/MagicInput'
 import LoadingSpinner from './components/LoadingSpinner'
 import ErrorMessage from './components/ErrorMessage'
-import { fetchRandom, addInspiration, searchInspirations, deleteInspiration } from './lib/inspirations'
+import { fetchRandom, addInspiration, searchInspirations, deleteInspiration, fetchCategories } from './lib/inspirations'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +25,12 @@ function InspirationApp() {
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
+
+  // Fetch categories list
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: fetchCategories,
+  })
 
   // Fetch random inspiration
   const {
@@ -43,6 +49,7 @@ function InspirationApp() {
     mutationFn: addInspiration,
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['randomInspiration'] })
+      qc.invalidateQueries({ queryKey: ['categories'] })
     },
   })
 
@@ -214,8 +221,9 @@ function InspirationApp() {
       <MagicInput
         isOpen={isInputOpen}
         onClose={() => setInputOpen(false)}
-        onSubmit={(content) => addMutation.mutateAsync(content)}
+        onSubmit={({ content, category }) => addMutation.mutateAsync({ content, category })}
         isSubmitting={addMutation.isPending}
+        categories={categories}
       />
     </div>
   )

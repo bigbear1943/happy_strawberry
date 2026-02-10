@@ -1,26 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Sparkles, Send } from 'lucide-react'
+import { X, Sparkles, Send, Plus, Tag, ChevronDown } from 'lucide-react'
 
-function previewCategory(text) {
-    const trimmed = text.trim()
-    if (!trimmed) return null
-    const charCount = trimmed.length
-    if (trimmed.startsWith('http') || trimmed.includes('://')) return '連結'
-    if (trimmed.includes('TODO') || trimmed.includes('todo') || trimmed.includes('待辦')) return '待辦'
-    if (charCount <= 20) return '語錄'
-    if (charCount <= 60) return '想法'
-    return '筆記'
-}
-
-export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting }) {
+export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting, categories = [] }) {
     const [content, setContent] = useState('')
-    const category = previewCategory(content)
+    const [category, setCategory] = useState('')
+    const [newCategory, setNewCategory] = useState('')
+    const [showCategoryPicker, setShowCategoryPicker] = useState(false)
+    const [isAddingNew, setIsAddingNew] = useState(false)
+
+    // Reset state when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setContent('')
+            setCategory('')
+            setNewCategory('')
+            setIsAddingNew(false)
+            setShowCategoryPicker(false)
+        }
+    }, [isOpen])
 
     const handleSubmit = async () => {
         if (!content.trim() || isSubmitting) return
-        await onSubmit(content.trim())
+        const finalCategory = isAddingNew ? newCategory.trim() : category
+        await onSubmit({ content: content.trim(), category: finalCategory || '一般' })
         setContent('')
+        setCategory('')
+        setNewCategory('')
         onClose()
     }
 
@@ -29,6 +35,22 @@ export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting }) 
             handleSubmit()
         }
     }
+
+    const selectCategory = (cat) => {
+        setCategory(cat)
+        setIsAddingNew(false)
+        setShowCategoryPicker(false)
+    }
+
+    const startAddNew = () => {
+        setIsAddingNew(true)
+        setCategory('')
+        setShowCategoryPicker(false)
+    }
+
+    const displayCategory = isAddingNew
+        ? (newCategory.trim() || '新分類...')
+        : (category || '選擇分類')
 
     return (
         <AnimatePresence>
@@ -90,23 +112,103 @@ export default function MagicInput({ isOpen, onClose, onSubmit, isSubmitting }) 
                            focus:border-sage-400/50 transition-colors"
                             />
 
-                            {/* Footer */}
-                            <div className="flex items-center justify-between mt-4 relative">
-                                {/* Auto-tag preview */}
-                                <AnimatePresence mode="wait">
-                                    {category && (
+                            {/* Category Picker */}
+                            <div className="mt-3 relative">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCategoryPicker(!showCategoryPicker)}
+                                    className="flex items-center gap-2 px-3 py-2 rounded-xl
+                             bg-zen-50/80 border border-zen-200/50 
+                             hover:border-sage-400/50 transition-colors
+                             text-sm cursor-pointer w-full"
+                                >
+                                    <Tag className="w-3.5 h-3.5 text-sage-500" />
+                                    <span className={category || (isAddingNew && newCategory.trim())
+                                        ? 'text-zen-700 font-medium'
+                                        : 'text-zen-400'
+                                    }>
+                                        {displayCategory}
+                                    </span>
+                                    <ChevronDown className={`w-3.5 h-3.5 text-zen-400 ml-auto transition-transform
+                    ${showCategoryPicker ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                {/* Category dropdown */}
+                                <AnimatePresence>
+                                    {showCategoryPicker && (
                                         <motion.div
-                                            key={category}
-                                            initial={{ opacity: 0, x: -8 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -8 }}
-                                            className="flex items-center gap-1.5 text-xs text-zen-400"
+                                            initial={{ opacity: 0, y: -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -4 }}
+                                            className="absolute bottom-full left-0 right-0 mb-2
+                                 bg-white rounded-2xl shadow-lg border border-zen-100
+                                 max-h-48 overflow-y-auto z-10"
                                         >
-                                            <span className="w-1.5 h-1.5 rounded-full bg-sage-400" />
-                                            自動標記為 <span className="font-medium text-zen-600">{category}</span>
+                                            {/* Existing categories */}
+                                            {categories.length > 0 && categories.map((cat) => (
+                                                <button
+                                                    key={cat}
+                                                    onClick={() => selectCategory(cat)}
+                                                    className={`w-full text-left px-4 py-2.5 text-sm
+                                     hover:bg-sage-400/5 transition-colors cursor-pointer
+                                     border-b border-zen-50 last:border-0
+                                     ${category === cat ? 'text-sage-600 font-medium bg-sage-400/5' : 'text-zen-700'}`}
+                                                >
+                                                    {cat}
+                                                </button>
+                                            ))}
+
+                                            {/* Add new category button */}
+                                            <button
+                                                onClick={startAddNew}
+                                                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm
+                                   text-sage-600 hover:bg-sage-400/5 transition-colors 
+                                   cursor-pointer border-t border-zen-100"
+                                            >
+                                                <Plus className="w-3.5 h-3.5" />
+                                                新增分類
+                                            </button>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
+
+                                {/* New category input */}
+                                <AnimatePresence>
+                                    {isAddingNew && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="mt-2"
+                                        >
+                                            <input
+                                                type="text"
+                                                value={newCategory}
+                                                onChange={(e) => setNewCategory(e.target.value)}
+                                                placeholder="輸入新的分類名稱..."
+                                                autoFocus
+                                                className="w-full bg-zen-50/50 rounded-xl px-3 py-2 text-sm
+                                   text-zen-800 placeholder-zen-400 outline-none
+                                   border border-sage-400/50"
+                                            />
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="flex items-center justify-between mt-4 relative">
+                                {/* Selected category display */}
+                                <div className="flex items-center gap-1.5 text-xs text-zen-400">
+                                    {(category || (isAddingNew && newCategory.trim())) && (
+                                        <>
+                                            <span className="w-1.5 h-1.5 rounded-full bg-sage-400" />
+                                            分類：<span className="font-medium text-zen-600">
+                                                {isAddingNew ? newCategory.trim() : category}
+                                            </span>
+                                        </>
+                                    )}
+                                </div>
 
                                 {/* Submit button */}
                                 <motion.button

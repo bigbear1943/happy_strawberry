@@ -1,28 +1,27 @@
 import { supabase } from './supabaseClient'
 
 /**
- * Auto-categorize content based on simple heuristics
+ * Fetch all distinct categories from the database
  */
-function autoTag(content) {
-    const trimmed = content.trim()
-    const charCount = trimmed.length
+export async function fetchCategories() {
+    const { data, error } = await supabase
+        .from('inspirations')
+        .select('category')
 
-    if (trimmed.startsWith('http') || trimmed.includes('://')) return '連結'
-    if (trimmed.includes('TODO') || trimmed.includes('todo') || trimmed.includes('待辦')) return '待辦'
-    if (charCount <= 20) return '語錄'
-    if (charCount <= 60) return '想法'
-    return '筆記'
+    if (error) throw error
+
+    // Extract unique categories
+    const unique = [...new Set(data.map((d) => d.category).filter(Boolean))]
+    return unique.sort()
 }
 
 /**
  * Add a new inspiration to the database
  */
-export async function addInspiration(content) {
-    const category = autoTag(content)
-
+export async function addInspiration({ content, category }) {
     const { data, error } = await supabase
         .from('inspirations')
-        .insert([{ content, category }])
+        .insert([{ content, category: category || '一般' }])
         .select()
         .single()
 
