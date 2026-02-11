@@ -6,9 +6,10 @@ import { Plus, Shuffle, Sparkles } from 'lucide-react'
 import ZenCard from './components/ZenCard'
 import SearchBar from './components/SearchBar'
 import MagicInput from './components/MagicInput'
+import CategoryFilter from './components/CategoryFilter'
 import LoadingSpinner from './components/LoadingSpinner'
 import ErrorMessage from './components/ErrorMessage'
-import { fetchRandom, addInspiration, searchInspirations, deleteInspiration, fetchCategories } from './lib/inspirations'
+import { fetchRandom, fetchRandomByCategories, addInspiration, searchInspirations, deleteInspiration, fetchCategories } from './lib/inspirations'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +24,8 @@ function InspirationApp() {
   const qc = useQueryClient()
   const [isInputOpen, setInputOpen] = useState(false)
   const [searchResults, setSearchResults] = useState([])
+  const [selectedCategories, setSelectedCategories] = useState([])
+  const [filterMode, setFilterMode] = useState('single')
   const [isSearching, setIsSearching] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
 
@@ -80,10 +83,19 @@ function InspirationApp() {
     setSelectedItem(item)
   }
 
-  // Get next random
-  const handleNext = () => {
+  // Get next random (filtered by categories if selected)
+  const handleNext = async () => {
     setSelectedItem(null)
-    refetch()
+    if (selectedCategories.length > 0) {
+      try {
+        const item = await fetchRandomByCategories(selectedCategories)
+        qc.setQueryData(['randomInspiration'], item)
+      } catch {
+        refetch()
+      }
+    } else {
+      refetch()
+    }
   }
 
   // Currently displayed card
@@ -125,6 +137,17 @@ function InspirationApp() {
           onSelect={handleSelect}
           results={searchResults}
           isSearching={isSearching}
+        />
+      </div>
+
+      {/* Category Filter */}
+      <div className="relative z-10 px-6 pb-2">
+        <CategoryFilter
+          categories={categories}
+          selected={selectedCategories}
+          onChange={setSelectedCategories}
+          mode={filterMode}
+          onModeChange={setFilterMode}
         />
       </div>
 

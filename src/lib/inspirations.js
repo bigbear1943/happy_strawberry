@@ -55,6 +55,37 @@ export async function fetchRandom() {
 }
 
 /**
+ * Fetch a random inspiration filtered by selected categories
+ */
+export async function fetchRandomByCategories(categories) {
+    if (!categories || categories.length === 0) {
+        return fetchRandom()
+    }
+
+    // Get count for filtered set
+    const { count, error: countError } = await supabase
+        .from('inspirations')
+        .select('*', { count: 'exact', head: true })
+        .in('category', categories)
+
+    if (countError) throw countError
+    if (!count || count === 0) return null
+
+    // Pick a random offset within the filtered set
+    const randomOffset = Math.floor(Math.random() * count)
+
+    const { data, error } = await supabase
+        .from('inspirations')
+        .select('*')
+        .in('category', categories)
+        .range(randomOffset, randomOffset)
+        .single()
+
+    if (error) throw error
+    return data
+}
+
+/**
  * Search inspirations by keyword
  */
 export async function searchInspirations(query) {
